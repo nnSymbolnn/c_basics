@@ -15,7 +15,6 @@ int file_copy (const char *file1, const char *file2)
 
     if (error_flag == 1) {
         printf ("Error! File doesn't exist!\n");
-        fclose(f_orig);
         return -1;
     }
 
