@@ -14,10 +14,11 @@ void scan_file(measures *st, FILE *data_file, int *cur_size)
             st->crt = i;
             i++;
 
-            if (i == 10)
+            if (i >= (*cur_size - 2))
             {
-            *cur_size *= 2;
-            //st = realloc (st, (sizeof(measures) + *cur_size));
+            printf ("Run out of memory, incrissing array size (%d)\n", *cur_size);
+            *cur_size = *cur_size * 2;
+            st = realloc (st, (sizeof(measures) * *cur_size));
             }
 
         } else printf ("ERROR! line:%d data:%s", j+1, file_str);

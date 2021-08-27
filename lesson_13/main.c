@@ -13,15 +13,20 @@ int main (int argc, char **argv){
     char user_file[50] = { 0 };
     const char *opts = "alm:f:h";
     int ret;
-    
-    struct measures_t *my_m;
-    my_m = malloc(sizeof(struct measures_t) * cur_size);
     get_cur_time(&current_month, &current_year);
-
-D printf("cur sz1=%d\n",cur_size);
-
     
-D printf("cur sz2=%d\n",cur_size);
+D   printf ("Enit cur_size=%d\n",cur_size);
+    struct measures_t *my_m;
+    my_m = (measures *)malloc(sizeof(struct measures_t) * cur_size);
+
+    // for testing
+    /*
+    strcpy(user_file,"test.csv");
+D printf("user_file =%s\n",user_file);
+    data_file = fopen(user_file,"r");
+    scan_file(my_m, data_file, &cur_size);
+D   printf ("After scannint cur_size=%d\n",cur_size);
+    */
 
     while ((ret = getopt(argc, argv, opts)) != -1){
         switch (ret){
@@ -48,8 +53,8 @@ D printf("cur sz2=%d\n",cur_size);
     print_all(my_m, current_year, current_year);
     printf ("===============================================\n");
 
-D printf("cur sz3=%d\n",cur_size);
-    free(my_m);
+D printf("end of programm cur_size=%d\n",cur_size);
+    free (my_m);
     if (data_file != NULL) fclose(data_file);
     return 0;
 }
