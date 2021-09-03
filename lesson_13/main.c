@@ -1,10 +1,5 @@
 #include "temp_functions.h"
-
-#ifdef DEBUG
-#define D if(1)
-#else
-#define D if(0)
-#endif
+#include <string.h>
 
 int main (int argc, char **argv){
 
@@ -13,20 +8,10 @@ int main (int argc, char **argv){
     char user_file[50] = { 0 };
     const char *opts = "alm:f:h";
     int ret;
+    int out_of_memory_check;
     get_cur_time(&current_month, &current_year);
-    
-D   printf ("Enit cur_size=%d\n",cur_size);
     struct measures_t *my_m;
-    my_m = (measures *)malloc(sizeof(struct measures_t) * cur_size);
-
-    // for testing
-    /*
-    strcpy(user_file,"test.csv");
-D printf("user_file =%s\n",user_file);
-    data_file = fopen(user_file,"r");
-    scan_file(my_m, data_file, &cur_size);
-D   printf ("After scannint cur_size=%d\n",cur_size);
-    */
+    my_m = (struct measures_t *)malloc(sizeof(struct measures_t) * cur_size);
 
     while ((ret = getopt(argc, argv, opts)) != -1){
         switch (ret){
@@ -34,8 +19,14 @@ D   printf ("After scannint cur_size=%d\n",cur_size);
                 strcpy (user_file,optarg);
                 strcat (user_file,".csv");
                 data_file = fopen(user_file,"r");
-                if (data_file == NULL) printf("Can't open %s file.\n", user_file); 
-                else scan_file(my_m, data_file, &cur_size);
+                if (data_file == NULL) {printf("Can't open %s file.\n", user_file);
+                    return 0;}
+                out_of_memory_check = scan_file(my_m, data_file, &cur_size);
+                if (out_of_memory_check == 1)
+                    do {
+                        my_m = (struct measures_t *)realloc(my_m, (sizeof(struct measures_t) * cur_size));
+                        out_of_memory_check = scan_file(my_m, data_file, &cur_size);
+                    } while (out_of_memory_check == 1);
                 break;
             case 'a' :
                 printf ("===============================================\n");
@@ -49,11 +40,11 @@ D   printf ("After scannint cur_size=%d\n",cur_size);
     }
 
     //Default current month + year summary printing
+    printf ("-----------------------------------------------\n"); 
     print_month_data(my_m, current_month, current_year, plug, 0);
     print_all(my_m, current_year, current_year);
     printf ("===============================================\n");
 
-D printf("end of programm cur_size=%d\n",cur_size);
     free (my_m);
     if (data_file != NULL) fclose(data_file);
     return 0;

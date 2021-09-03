@@ -22,7 +22,7 @@ typedef struct measures_t{
     int crt;
 } measures;
 
-void scan_file(measures *st, FILE *data_file, int *cur_size);
+int scan_file(measures *st, FILE *data_file, int *cur_size);
 void print_data(measures *st);
 
 void print_all(measures *st, int year, int is_cur);

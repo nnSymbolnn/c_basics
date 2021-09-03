@@ -1,29 +1,28 @@
 #include "temp_functions.h"
 
 
-void scan_file(measures *st, FILE *data_file, int *cur_size)
+int scan_file(measures *st, FILE *data_file, int *cur_size)
 {
     int i = 0, j = 0;
     char *file_str;
     int check;
-
     while (fgets(file_str, 22, data_file))
-    {
-        check = sscanf(file_str, "%4d;%2d;%2d;%2d;%2d;%3d",&st[i].year,&st[i].month,&st[i].day,&st[i].hour,&st[i].minute,&st[i].temp);
+    {   
+        check = sscanf(file_str, "%d;%d;%d;%d;%d;%d",&st[i].year,&st[i].month,&st[i].day,&st[i].hour,&st[i].minute,&st[i].temp);
         if (check == 6) {
             st->crt = i;
             i++;
-
-            if (i >= (*cur_size - 2))
+        
+            if (i >= (*cur_size - 1))
             {
             printf ("Run out of memory, incrissing array size (%d)\n", *cur_size);
             *cur_size = *cur_size * 2;
-            st = realloc (st, (sizeof(measures) * *cur_size));
+            return 1;
             }
-
-        } else printf ("ERROR! line:%d data:%s", j+1, file_str);
+        } else printf ("ERROR! line:%d data:%s\n", j+1, file_str);
     j++;
     }
+    return 0;
 }
 
 
